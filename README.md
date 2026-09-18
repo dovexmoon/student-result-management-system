@@ -72,37 +72,6 @@ This is 13 Python files in a properly packaged structure (`src/`, `src/models/`,
 `src/services/`, `src/utils/`, `tests/`), well above the minimum of 5–10
 meaningful modules/files.
 
-## Setup & Installation
-
-### Prerequisites
-- Python 3.9 or later installed ([python.org](https://www.python.org/downloads/))
-- Git (to clone the repository)
-
-Check your Python version:
-```bash
-python3 --version
-```
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/{github-username}/{repo-name}.git
-cd {repo-name}
-```
-
-### 2. (Optional but recommended) create a virtual environment
-No third-party packages are required, so this is optional — but it's good
-practice:
-```bash
-python3 -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-```
-
-### 3. Install dependencies
-There are none beyond the Python standard library. `requirements.txt` is
-included to document this explicitly:
-```bash
-pip install -r requirements.txt
-```
 
 ## How to Run
 
