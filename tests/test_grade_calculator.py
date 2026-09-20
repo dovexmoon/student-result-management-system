@@ -1,12 +1,3 @@
-"""
-tests/test_grade_calculator.py
---------------------------------
-Unit tests (module: Testing wherever applicable, per the assignment's
-Technical Expectations). Run with:
-
-    python -m unittest discover -s tests -v
-"""
-
 import unittest
 
 from src.utils.grade_calculator import grade_for_percentage, letter_to_grade_point
@@ -35,12 +26,12 @@ class TestGradeCalculator(unittest.TestCase):
     def test_grade_point_mapping(self):
         self.assertEqual(letter_to_grade_point("A+"), 10.0)
         self.assertEqual(letter_to_grade_point("F"), 0.0)
-        self.assertEqual(letter_to_grade_point("Z"), 0.0)  # unknown grade -> 0.0
+        self.assertEqual(letter_to_grade_point("Z"), 0.0) 
 
 
 class TestValidators(unittest.TestCase):
     def test_valid_roll_no(self):
-        self.assertEqual(validate_roll_no(" 21bce001 "), "21BCE001")
+        self.assertEqual(validate_roll_no(" 26bce001 "), "26BCE001")
 
     def test_empty_roll_no_raises(self):
         with self.assertRaises(InvalidRollNumberError):
@@ -48,14 +39,14 @@ class TestValidators(unittest.TestCase):
 
     def test_non_alnum_roll_no_raises(self):
         with self.assertRaises(InvalidRollNumberError):
-            validate_roll_no("21-BCE-001")
+            validate_roll_no("26-BCE-001")
 
     def test_valid_name(self):
-        self.assertEqual(validate_name("john doe"), "John Doe")
+        self.assertEqual(validate_name("ASHISH"), "ASHISH")
 
     def test_name_with_digits_raises(self):
         with self.assertRaises(InvalidNameError):
-            validate_name("John3")
+            validate_name("ASHISH")
 
     def test_valid_marks(self):
         self.assertEqual(validate_marks("87.5"), 87.5)
@@ -80,7 +71,7 @@ class TestValidators(unittest.TestCase):
 
 class TestStudentModel(unittest.TestCase):
     def setUp(self):
-        self.student = Student("21BCE001", "Jane Doe")
+        self.student = Student("26BCE001", "ASHISH")
         self.student.set_marks("Python", 90)
         self.student.set_marks("Mathematics", 85)
         self.student.set_marks("Data Structures", 78)
@@ -98,7 +89,7 @@ class TestStudentModel(unittest.TestCase):
         self.assertTrue(self.student.is_overall_pass())
 
     def test_fail_when_one_subject_below_threshold(self):
-        self.student.set_marks("English", 10)  # below PASS_MARKS_PER_SUBJECT
+        self.student.set_marks("English", 10)  
         self.assertIn("English", self.student.failed_subjects())
         self.assertFalse(self.student.is_overall_pass())
 
