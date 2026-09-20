@@ -1,62 +1,55 @@
-# Student Result Management System (SRMS)
+# Student's Result Management System (SRMS)
 
-A command-line application, written in pure Python, that lets a teacher/administrator
-manage a class roster, record subject-wise marks, compute grades, and generate
-class-wide analytics and reports — built as the course project for **VITyarthi:
-Build Your Own Project** (Python — Modules 1 to 12: Introduction to Fundamentals,
-Data Structures, Control Flow, Functions, Modules & Packages, Arrays, and OOP).
-
+A command line application, written in pure Python, that lets a teacher/administrator
+manage a class record, record subjectwise marks, compute grades, and generate
+classwise analytics and reports , built as the course project for **VITyarthi**
 ---
 
 ## Overview
 
-Managing student results by hand (or in a scattered spreadsheet) is error-prone
-and hard to analyse. SRMS gives a teacher a single, reliable, offline tool to:
+Managing student results by hand or in a spreadsheet is not errorfree and hard to analyse. SRMS gives a teacher a single, reliable, offline tool to:
 
-- maintain a roster of students,
-- enter/update subject-wise marks with input validation,
-- automatically compute totals, percentages and letter grades,
-- generate a formatted marksheet for any student,
-- rank the whole class and compute pass/fail and subject-wise statistics,
-- export a class report to CSV.
-
-All data is persisted to a plain CSV file (`data/students.csv`), so no database
-server or internet connection is required.
+- maintain a result of students,
+- enter/update subjectwise marks with input validation,
+- automatically calculate totals, percentages and letter grades,
+- generates a formatted marksheet for any student,
+- rank the whole class and concludes pass/fail and subjectwise statistics,
+  
 
 ## Features
 
 | # | Functional Module | What it does |
 |---|---|---|
 | 1 | **Student & Marks Management** | Add, update, search, list and remove students; enter/update marks per subject, with full input validation. |
-| 2 | **Result Processing & Grading** | Computes total marks, percentage, and letter grade (A+ → F) per student, and per-subject pass/fail status, using configurable grade boundaries. |
-| 3 | **Reporting & Analytics** | Class rank list, topper, class average, subject-wise averages, pass/fail summary, and CSV export of the full class report. |
+| 2 | **Result Processing & Grading** | Calculates total marks, percentage, and letter grade (A-F) per student, and for every subject pass/fail status, using  the range of marks for grade. |
+| 3 | **Reporting & Analytics** | Class rank list, topper, class average, subjectwise averages, pass/fail summary. |
 
 ## Technologies / Tools Used
 
-- **Language:** Python 3.9+ (standard library only — no third-party packages)
-- **Core modules used:** `csv` (file I/O / persistence), `array` (compact numeric storage for class statistics), `unittest` (testing), `os`, `sys`
-- **Concepts applied:** variables & operators, type conversion, precedence, core data structures (list, dict, tuple, set, array), control flow, functions, packages/modules, array data structures, and full Object-Oriented Programming (classes, encapsulation, inheritance via custom exceptions, class/static methods, dunder methods)
+- **Language:** Python 3.9+ (standard library)
+- **Core modules used:** `csv`,`array` , `unittest` , `os`, `sys`
+- **Concepts applied:** variables & operators, type conversion, precedence, list, dict, tuple, set, array, control flow, functions, packages/modules, array data structures, and full Object Oriented Programming (classes, encapsulation, inheritance via custom exceptions, class/static methods, dunder methods)
 - **Version control:** Git / GitHub
 
 ## Project Structure
 
 ```
-student-result-management-system/
-├── main.py                        # CLI entry point (menu-driven)
-├── requirements.txt                # documents "stdlib only" — no installs needed
+student result management system/
+├── main.py                        # Command line interface entry point 
+├── requirements.txt                # documents "stdlib only"
 ├── README.md
 ├── statement.md                    # problem statement, scope, target users
 ├── data/
-│   └── students.csv                # sample seed data (5 students)
+│   └── students.csv                # sample data (5 students)
 ├── src/
 │   ├── config.py                   # constants: subjects, grade table, file paths
-│   ├── exceptions.py                # custom exception hierarchy
+│   ├── exceptions.py                
 │   ├── models/
 │   │   ├── student.py               # Student class (OOP)
 │   │   └── subject.py               # Subject class (OOP)
 │   ├── services/
-│   │   ├── file_handler.py          # CSV read/write (persistence layer)
-│   │   ├── result_manager.py        # Functional Module 1: CRUD
+│   │   ├── file_handler.py          # CSV read/write 
+│   │   ├── result_manager.py        # Functional Module 1: Create,Read,Update and Delete
 │   │   └── report_service.py        # Functional Modules 2 & 3: grading + analytics
 │   └── utils/
 │       ├── validators.py            # input validation + type conversion
@@ -68,9 +61,6 @@ student-result-management-system/
     └── diagrams/                    # architecture, workflow, use case, class, sequence
 ```
 
-This is 13 Python files in a properly packaged structure (`src/`, `src/models/`,
-`src/services/`, `src/utils/`, `tests/`), well above the minimum of 5–10
-meaningful modules/files.
 
 
 ## How to Run
@@ -80,7 +70,7 @@ From the project root:
 python3 main.py
 ```
 
-You'll see a menu-driven interface:
+You'll see a menu driven interface:
 ```
 ╔══════════════════════════════════════════════════╗
 ║   STUDENT RESULT MANAGEMENT SYSTEM                ║
@@ -99,23 +89,9 @@ You'll see a menu-driven interface:
 ```
 
 The repository ships with 5 sample students already in `data/students.csv`
-so you can try options 3–8 immediately without adding data first. Choose
-option **10** at any time to persist changes back to the CSV file.
+so you can try options 3 to 8 immediately without adding data first. Choose
+option **10** at any time to continue changes back to the CSV file.
 
-## Instructions for Testing
-
-Run the automated unit test suite (17 tests covering grading logic, input
-validation, and the `Student` model):
-```bash
-python3 -m unittest discover -s tests -v
-```
-
-Expected output ends with:
-```
-Ran 17 tests in 0.00Xs
-
-OK
-```
 
 ### Manual test checklist
 1. Run `python3 main.py`, choose **4** → confirm the 5 seeded students appear.
@@ -131,39 +107,14 @@ OK
 8. Choose **10** → confirm the program exits and `data/students.csv` reflects
    your changes.
 
-## Regenerating the Design Diagrams
 
-All diagrams in `docs/diagrams/` (architecture, workflow, use case, class,
-sequence) are generated programmatically and reproducibly:
-```bash
-python3 docs/generate_diagrams.py
-```
 
 ## Screenshots
 
 See `docs/screenshots/` for sample runs (menu, marksheet output, and class
 statistics).
 
-## Design Decisions (summary)
-
-- **Layered architecture** (CLI → Service → Utility → Model → Data Access) keeps
-  each concern isolated and testable in isolation.
-- **CSV over a database**: matches the syllabus scope (file I/O module) and
-  keeps the project runnable anywhere with zero setup.
-- **Custom exception hierarchy** (`SRMSError` and subclasses) turns every
-  failure mode into a friendly, specific message instead of a raw traceback.
-- **`array` module** used explicitly for class-wide percentage figures, as a
-  deliberate, syllabus-aligned choice over a plain list for homogeneous
-  numeric data.
-
-## Future Enhancements
-
-- Optional SQLite backend for larger datasets
-- CSV import for bulk student onboarding
-- PDF marksheet export per student
-- Web-based front end (Flask) reusing the existing `src/` service layer unchanged
 
 ## License
 
-Built for academic submission (VITyarthi coursework). Free to reference for
-learning purposes.
+Built for academic submission VITyarthi
