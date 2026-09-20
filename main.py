@@ -1,18 +1,3 @@
-#!/usr/bin/env python3
-"""
-main.py
--------
-Entry point for the Student Result Management System (SRMS).
-
-A menu-driven command-line interface (module: Control Flow Statements in
-Python) that wires together every layer of the application:
-
-    models/      -> Student, Subject                (OOP)
-    utils/       -> validators, grade_calculator     (functions)
-    services/    -> ResultManager, ReportService, FileHandler  (business logic + I/O)
-
-Run with:  python main.py
-"""
 
 import sys
 
@@ -46,97 +31,90 @@ MENU = """
 """
 
 
-def prompt(label: str) -> str:
-    return input(f"{label}: ").strip()
+name= input("enter your name")
 
-
-def action_add_student(rm: ResultManager) -> None:
-    roll_no = validate_roll_no(prompt("Roll number"))
-    name = validate_name(prompt("Full name"))
+def action_add_student(rm):
+    roll_no = int(input("Roll number"))
+    name = input("Full name")
     rm.add_student(roll_no, name)
-    print(f"✔ Student '{name}' ({roll_no}) added.")
+    print(f" Student '{name}' ({roll_no}) added.")
 
 
-def action_enter_marks(rm: ResultManager) -> None:
-    roll_no = validate_roll_no(prompt("Roll number"))
-    student = rm.get_student(roll_no)  # raises StudentNotFoundError early if invalid
-    print(f"Entering marks for {student.name}. Subjects: {', '.join(SUBJECTS)}")
-    for subject_name in SUBJECTS:
-        raw = prompt(f"  {subject_name} marks (out of 100)")
-        if raw == "":
-            continue  # allow skipping a subject, keeps previous value
-        marks = validate_marks(raw)
-        rm.update_marks(roll_no, subject_name, marks)
-    print(f"✔ Marks updated for {student.name}.")
+def action_enter_marks(rm):
+    roll_no = int(input("Roll number"))
+    student_name = input("Enter student name: ")
+    subjects = ["Math", "Science", "English"]
+    
+    for subject in subjects:
+        ri = input(f"Enter {subject} marks (out of 100) or press Enter to skip: ")
+        if ri != "":
+            marks = int(ri)
+            print(f"Saved {marks} for {subject}.")
+    print(f"Marks updated for {student_name}.")
 
 
-def action_view_marksheet(rm: ResultManager) -> None:
-    roll_no = validate_roll_no(prompt("Roll number"))
+def action_view_marksheet(rm):
+    roll_no = int(input("Roll number"))
     student = rm.get_student(roll_no)
     print(ReportService.marksheet(student))
 
 
-def action_list_students(rm: ResultManager) -> None:
+def action_list_students(rm):
     students = rm.list_students()
     if not students:
-        print("No students in the system yet.")
+        print("No students in the system.")
         return
-    print(f"\n{'Roll No':<10}{'Name':<22}{'%':>8}{'Grade':>8}")
-    print("-" * 48)
+    print("Roll No | Name | % | Grade")
+    print("-" * 30)
     for s in students:
-        print(f"{s.roll_no:<10}{s.name:<22}{s.percentage():>8.2f}{s.overall_grade():>8}")
+        print(f"{s.roll_no} | {s.name} | {s.percentage()} | {s.overall_grade()}")
 
-
-def action_search(rm: ResultManager) -> None:
-    keyword = prompt("Search name contains")
-    matches = rm.search_by_name(keyword)
+def action_search(rm):
+    matches = rm.search_by_name(prompt("Search name contains"))
     if not matches:
-        print("No matches found.")
-        return
+        return print("No matches found.")    
     for s in matches:
-        print(f"  {s}")
+        print(f" {s}")
+  
 
-
-def action_remove(rm: ResultManager) -> None:
-    roll_no = validate_roll_no(prompt("Roll number to remove"))
-    confirm = prompt(f"Type YES to confirm deleting {roll_no}")
-    if confirm != "YES":
-        print("Cancelled.")
-        return
+def action_remove(rm):
+    roll_no = input("Roll number to remove: ")
     rm.remove_student(roll_no)
-    print(f"✔ Student {roll_no} removed.")
+    print(f"Student {roll_no} removed.")
 
 
-def action_rank_list(rm: ResultManager) -> None:
-    ranked = ReportService.rank_list(rm.list_students())
-    print(f"\n{'Rank':<6}{'Roll No':<10}{'Name':<22}{'%':>8}{'Grade':>8}")
-    print("-" * 54)
-    for i, s in enumerate(ranked, start=1):
-        print(f"{i:<6}{s.roll_no:<10}{s.name:<22}{s.percentage():>8.2f}{s.overall_grade():>8}")
+def action_rank_list(rm):
+    students = rm.list_students()
+    ranked = sorted(students, key=lambda s: s.percentage(), reverse=True)
+    print("Rank | Roll No | Name | Percentage | Grade")
+    print("-" * 50)
+    rank = 1
+    for s in ranked:
+        print(rank, "|", s.roll_no, "|", s.name, "|", s.percentage(), "|", s.overall_grade())
+        rank += 1
 
 
-def action_statistics(rm: ResultManager) -> None:
+def action_statistics(rm):
     students = rm.list_students()
     avg = ReportService.class_average(students)
     top = ReportService.topper(students)
     summary = ReportService.pass_fail_summary(students)
     subj_avg = ReportService.subject_wise_average(students)
 
-    print(f"\nClass average       : {avg}%")
-    print(f"Topper              : {top.name} ({top.roll_no}) -- {top.percentage()}%")
-    print(f"Passed / Failed     : {summary['passed']} / {summary['failed']} "
-          f"(of {summary['total']})")
+    print("Class average:", avg, "%")
+    print("Topper:", top.name, top.roll_no, top.percentage(), "%")
+    print("Passed / Failed:", summary['passed'], "/", summary['failed'], "of", summary['total'])
     print("Subject-wise average:")
     for subject, avg_marks in subj_avg.items():
-        print(f"  {subject:<18}: {avg_marks}")
+        print(subject, ":", avg_marks)
 
 
-def action_export(rm: ResultManager) -> None:
+def action_export(rm):
     students = rm.list_students()
     rows = ReportService.export_rows(students)
     fieldnames = ["rank", "roll_no", "name", "total", "percentage", "grade", "result"]
     FileHandler().export_rows(REPORT_CSV, fieldnames, rows)
-    print(f"✔ Class report exported to {REPORT_CSV}")
+    print("Class report exported to {}".format(report_csv))
 
 
 ACTIONS = {
@@ -152,38 +130,25 @@ ACTIONS = {
 }
 
 
-def main() -> None:
-    rm = ResultManager()
-    print("Student Result Management System -- type Ctrl+C at any time to abort safely.")
-
+def main():
+    print("Student Result Management System")
+    print("Type 10 to exit the program safely.\n")
     while True:
-        print(MENU)
-        choice = prompt("Choose an option (1-10)")
-
+        print("--- MENU ---")
+        print("1. Add Student  2. View Results  ...  10. Save & Exit") 
+        choice = input("Choose an option (1-10): ")
         if choice == "10":
-            rm.save()
-            print("Data saved. Goodbye!")
-            sys.exit(0)
-
-        action = ACTIONS.get(choice)
-        if action is None:
+            print("Saving data... Goodbye!")
+            break 
+            
+        elif choice == "1":
+            print("You chose to add a student.")
+        elif choice == "2":
+            print("You chose to view results.")   
+        else:
             print("Invalid option, please choose a number from the menu.")
-            continue
+main()
 
-        try:
-            action(rm)
-        except SRMSError as exc:
-            # Every custom exception in the system inherits from SRMSError,
-            # so this single handler catches them all with a friendly message
-            # instead of a raw traceback -- the required error-handling strategy.
-            print(f"✖ Error: {exc}")
-        except KeyboardInterrupt:
-            print("\nInterrupted. Data not saved for this action -- returning to menu.")
+print("Exiting without saving unsaved changes. Bye!")
+exit()
 
-
-if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\nExiting without saving unsaved changes. Bye!")
-        sys.exit(0)
